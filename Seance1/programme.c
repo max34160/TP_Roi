@@ -18,35 +18,61 @@ void print_str(const char* word){
 };
 
 int str_equals(const char* a, const char* b){
-    int countA = 0;
-    int sameA = 0;
-    int countB = 0;
-    int sameB = 0;
-   
-    while(a[countA] != '\0'){
-        if(a[countA] == b[countA]){
-            sameA++;
+    int i = 0 ;
+    if(str_len(a) != str_len(b)) return 0;
+
+    while(a[i] != '\0' ){
+        if(a[i] != b[i]){
+            return 0;
         }
-        countA++;
+        i++;
+    }
+    return 1;
+};
+
+void str_concat(char* dest, const char* a, const char* b){
+    int i = 0;
+    int j = 0;
+    while(a[j] != '\0' ){
+        dest[i] = a[i];
+        i++;
+        j++;
+    }
+    j = 0;
+    while(b[j] != '\0' ){
+        dest[i] = b[j];
+        i++;
+        j++;
+    }
+    dest[i] = '\0';
+
+};
+
+int str_contains(const char* haystack, const char* needle){
+    if(str_len(needle) > str_len(haystack)) return 0;
+    
+    int i = 0;
+    int j = 0;
+
+    while(haystack[i] != '\0' ){
+        if(haystack[i] == needle[j]){
+            j++;
+        }
+        i++;
     }
 
-    while(b[countB] != '\0'){
-        if(a[countB] == b[countB]){
-            sameB++;
-        }
-        countB++;
-    }
+    if(j == str_len(needle)) return 1;
+    return 0; 
 
-    if(sameA == sameB && countA == countB){
-        return 1;
-    }else{
-        return 0;
-    }
 };
 
 int main(void) {
     //printf("%s : %d","longueur",str_len("Hello\n"));
     //print_str("Hello\n");
-    printf("%s : %d","result\n",str_equals("Hell","Hello\n"));
+    //printf("%s : %d","result\n",str_equals("Hell","Hello"));
+    // char dest[256];
+    // str_concat(dest,"Hell","Hello");
+    // printf("%s result\n",dest);
+
     return 0;
 }
