@@ -66,12 +66,49 @@ int str_contains(const char* haystack, const char* needle){
 
 };
 
+int str_count_chars(const char* s, char c){
+    int i = 0;
+    int j = 0;
+    
+    while(s[i] != '\0' ){
+        if(s[i] == c){
+            j++;
+        }
+        i++;
+    }
+    return j ;
+};
+
+void str_replace(char* dest, const char* src, char from, char to){
+    int i = 0;
+    
+    while(src[i] != '\0' ){
+
+        if(dest[i] != from) dest[i] = src[i];
+        if(dest[i] == from) dest[i] = to;
+        i++;
+    }
+    dest[i] = '\0';
+};
+
+int str_split(const char* s, char sep, char parts[][256], int max_parts){
+    
+};
+
 int main(void) {
     //printf("%s : %d","longueur",str_len("Hello\n"));
     //print_str("Hello\n");
     //printf("%s : %d","result\n",str_equals("Hell","Hello"));
     // char dest[256];
     // str_concat(dest,"Hell","Hello");
+    // printf("%s result\n",dest);
+    // printf("%s : %d","result\n",str_contains("qsqdqdqdqdqhelsqlsqskqksqk","hwe"));
+    // char b = 'q';
+    // printf("%s : %d","result\n",str_count_chars("qsqdqdqdqdqhelsqlsqskqksqk",b));
+    // char dest[256];
+    // char b = 'q';
+    // char a = 'O';
+    // str_replace(dest,"qqqqttttttqqqqqq",b,a);
     // printf("%s result\n",dest);
 
     return 0;
