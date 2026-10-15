@@ -92,8 +92,72 @@ void str_replace(char* dest, const char* src, char from, char to){
 };
 
 int str_split(const char* s, char sep, char parts[][256], int max_parts){
+    int a = 0;
+    int b = 0;
+    int c = 0;
+
+    if (str_count_chars(s,sep)+1 > max_parts) return 0;
+
+    while(s[a] != '\0' ){
+
+        if(s[a] != sep){
+            parts[b][c] = s[a];
+            c++;
+        }else{
+            parts[b][c] = '\0';
+            c = 0;
+            b++;
+        }
+
+        a++;
+    }
+    parts[b][c] = '\0'; 
+    return b+1 ;
     
 };
+
+void print_split(const char parts[][256], int nb_parts){
+    int i = 0;
+    while(i != nb_parts){
+        printf("%s part %d \n",parts[i],i);
+        i++;
+    }
+};
+
+void str_join(char* dest, char parts[][256], int nb_parts, const char* sep){
+    int i = 0;
+    int j = 0;
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    
+    while(i < nb_parts){
+
+        if(parts[a][b] == '\0') {
+
+            if(i < nb_parts - 1){
+
+                while(j < str_len(sep)){
+                    dest[c] = sep[j];
+                    j++;
+                    c++;
+                }
+                j = 0;
+            }
+            a++;
+            b = 0;      
+            i++;        
+        }else{
+            dest[c] = parts[a][b];
+            b++;
+            c++;
+        }
+    }
+
+    dest[c] = '\0';
+
+};
+
 
 int main(void) {
     //printf("%s : %d","longueur",str_len("Hello\n"));
@@ -110,6 +174,13 @@ int main(void) {
     // char a = 'O';
     // str_replace(dest,"qqqqttttttqqqqqq",b,a);
     // printf("%s result\n",dest);
-
+    // char parts[20][256];
+    // int n = str_split("a,b,c,d,g,f,d,d,f,fd,aaa", ',', parts, 20);
+    // printf("%s : %d \n","result\n",n);
+    // print_split(parts,11);
+    char dest[256];
+    char parts[12][256] = {"a","b","c","d","g","f","d","d","f","fd","aaa","jdhzdhzdh"};
+    str_join(dest, parts, 12, ",");
+    printf("Test : %s\n", dest);
     return 0;
 }
