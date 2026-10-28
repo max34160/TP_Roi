@@ -46,7 +46,7 @@ class BankAccountTest {
     
     @Test
     void shouldRejectNullAccountNumber() {
-        assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () -> new BankAccount(null, "Alice", 100.0));
         // TODO: Implémenter ce test
         // Vérifier qu'une IllegalArgumentException est levée
         // avec un message approprié
@@ -54,26 +54,26 @@ class BankAccountTest {
     
     @Test
     void shouldRejectEmptyAccountNumber() {
-        assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () -> new BankAccount("", "Alice", 100.0));
         // TODO: Implémenter ce test
         // Tester avec une chaîne vide ""
     }
     
     @Test
     void shouldRejectNullHolderName() {
-        assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () -> new BankAccount("TV467889", null, 100.0));
         // TODO: Implémenter ce test
     }
     
     @Test
     void shouldRejectEmptyHolderName() {
-        assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () -> new BankAccount("TV467889", "", 100.0));
         // TODO: Implémenter ce test
     }
     
     @Test
     void shouldRejectNegativeInitialBalance() {
-        assertTrue(false);
+        assertThrows(IllegalArgumentException.class, () -> new BankAccount("TV467889", "toto", -100.0));
         // TODO: Implémenter ce test
         // Tester avec -10.0 par exemple
     }
@@ -104,16 +104,16 @@ class BankAccountTest {
     
     @Test
     void shouldRejectZeroDeposit() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Le dépôt de 0.0 doit intercepter IllegalArgumentException
+        assertThrows(IllegalArgumentException.class, () -> account.deposit(0.0));
     }
     
     @Test
     void shouldRejectNegativeDeposit() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Le dépôt de -50.0 doit intercepter IllegalArgumentException
+        assertThrows(IllegalArgumentException.class, () -> account.deposit(-10.0));
     }
     
     @Test
@@ -136,18 +136,21 @@ class BankAccountTest {
     
     @Test
     void shouldDecreaseBalanceOnValidWithdrawal() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Retirer 30.0 d'un compte avec 100.0
         // Vérifier que le solde devient 70.0
+
+        account.withdraw((30.0));
+        assertEquals(70.0,account.getBalance());
     }
     
     @Test
     void shouldRejectWithdrawalExceedingBalance() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Tentative de retrait de 150.0 d'un compte avec 100.0
         // Doit intercepter IllegalArgumentException
+
+        assertThrows(IllegalArgumentException.class, () -> account.withdraw(150.0));
     }
     
     @Test
@@ -165,23 +168,27 @@ class BankAccountTest {
     
     @Test
     void shouldRejectWithdrawalExceedingOverdraftLimit() {
-        assertTrue(false);
+        account.setOverdraftLimit(50.0);
+
+
+        assertThrows(IllegalArgumentException.class, () -> account.withdraw(170.0));
         // TODO: Implémenter ce test
         // Doit intercepter IllegalArgumentException
     }
     
     @Test
     void shouldRejectWithdrawalOnInactiveAccount() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Désactiver le compte puis tenter un retrait
+        account.deactivate();
+        assertThrows(IllegalStateException.class, () -> account.withdraw(10.0));
     }
     
     @Test
     void shouldRejectNegativeWithdrawal() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Tentative de retrait de -50.0
+        assertThrows(IllegalArgumentException.class, () -> account.withdraw(-10.0));
     }
     
     // === TESTS DE TRANSFERT ===
@@ -204,30 +211,35 @@ class BankAccountTest {
     
     @Test
     void shouldRejectTransferWithInsufficientFunds() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Tentative de transfert de 150.0 d'un compte avec 100.0
+        BankAccount targetAccount = new BankAccount("ACC002", "Bob Martin", 0.0);
+        assertThrows(IllegalArgumentException.class, () -> account.transfer(targetAccount, 150.0));
     }
     
     @Test
     void shouldRejectTransferToNullAccount() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Tentative de transfert vers null
+        assertThrows(IllegalArgumentException.class, () -> account.transfer(null, 30.0));
     }
     
     @Test
     void shouldRejectTransferToInactiveAccount() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Créer un compte cible, le désactiver, tenter le transfert
+        BankAccount targetAccount = new BankAccount("ACC002", "Bob Martin", 0.0);
+        targetAccount.deactivate();
+        assertThrows(IllegalStateException.class, () -> account.transfer(targetAccount, 30.0));
     }
     
     @Test
     void shouldRejectTransferFromInactiveAccount() {
-        assertTrue(false);
         // TODO: Implémenter ce test
         // Désactiver le compte source, tenter le transfert
+        BankAccount targetAccount = new BankAccount("ACC002", "Bob Martin", 0.0);
+        account.deactivate();
+        assertThrows(IllegalStateException.class, () -> account.transfer(targetAccount, 30.0));
     }
     
     // === TESTS D'ACTIVATION/DÉSACTIVATION ===
@@ -275,6 +287,7 @@ class BankAccountTest {
     void shouldRejectNegativeOverdraftLimit() {
         // TODO: Implémenter ce test
         // Tentative de définir une limite de -50.0
+        assertThrows(IllegalArgumentException.class, () -> account.setOverdraftLimit(-30.0));
     }
     
     // === TESTS DES MÉTHODES UTILITAIRES ===
@@ -290,14 +303,14 @@ class BankAccountTest {
     
     @Test
     void shouldReturnTrueWhenCanWithdraw() {
-        assertTrue(false);
+        assertTrue(account.canWithdraw(50.0));
         // TODO: Implémenter ce test
         // Vérifier que canWithdraw(50.0) retourne true pour un compte avec 100.0
     }
     
     @Test
     void shouldReturnFalseWhenCannotWithdraw() {
-        assertTrue(false);
+        assertFalse(account.canWithdraw(150.0));
         // TODO: Implémenter ce test
         // Vérifier que canWithdraw(150.0) retourne false pour un compte avec 100.0 sans découvert
     }
@@ -309,6 +322,18 @@ class BankAccountTest {
         
         // ACT & ASSERT
         assertFalse(account.canWithdraw(50.0));
+    }
+
+    @Test
+    void shouldReturnFalseWhenCanWithdrawOnNegativeAmount() {
+
+        assertFalse(account.canWithdraw(-50.0));
+    }
+
+    @Test
+    void shouldReturnFalseWhenCanWithdrawOnZeroAmount() {
+
+        assertFalse(account.canWithdraw(0.0));
     }
     
     // === TESTS DE SCÉNARIOS COMPLEXES ===

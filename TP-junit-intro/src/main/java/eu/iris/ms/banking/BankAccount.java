@@ -21,6 +21,14 @@ public class BankAccount {
      */
     public BankAccount(String accountNumber, String holderName, double initialBalance) throws IllegalArgumentException {
         // TODO: Implémenter les validations
+        if(accountNumber == null || accountNumber.isBlank()) throw new IllegalArgumentException ("Account number cannot be null or empty");
+        if(holderName == null || holderName.isBlank()) throw new IllegalArgumentException ("Holder name cannot be null or empty");
+        if(initialBalance < 0) throw new IllegalArgumentException ("Initial balance cannot be negative");
+        this.accountNumber = accountNumber;
+        this.holderName = holderName;
+        this.balance = initialBalance;
+        this.isActive = true;
+        this.overdraftLimit = 0.0;
         // Se référer aux règles métiers pour déterminer les validations&throws à effectuer.
         // Lever IllegalArgumentException avec message explicite si invalide
         
@@ -38,7 +46,10 @@ public class BankAccount {
         // 1. Se référer aux règles métiers pour déterminer les validations&throws à effectuer.
         //    Lever les exceptions appropriées avec messages clairs
         // 2. Ajouter amount à balance
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(amount <= 0.0) throw new IllegalArgumentException ("Deposit amount must be positive");
+        if(!this.isActive) throw new IllegalStateException ("Account is not active");
+
+        this.balance += amount;
     }
     
     /**
@@ -52,7 +63,11 @@ public class BankAccount {
         // 1. Se référer aux règles métiers pour déterminer les validations&throws à effectuer.
         //    Lever les exceptions appropriées avec messages clairs
         // 2. Déduire amount du balance
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(amount <= 0.0) throw new IllegalArgumentException ("Withdraw amount must be positive");
+        if(!this.isActive) throw new IllegalStateException ("Account is not active");
+        if(amount > (this.balance + this.overdraftLimit)) throw new IllegalArgumentException ("Insufficient funds");
+
+        this.balance -= amount;
     }
     
     /**
@@ -69,7 +84,10 @@ public class BankAccount {
         // 2. Utiliser withdraw() pour retirer de ce compte
         // 3. Utiliser targetAccount.deposit() pour déposer
         // Note : si withdraw() échoue, le transfert échoue (cohérence)
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(targetAccount == null) throw new IllegalArgumentException ("Target account cannot be null");
+        if (!targetAccount.isActive()) throw new IllegalStateException("Account is not active");
+        this.withdraw(amount);
+        targetAccount.deposit(amount);
     }
     
     /**
@@ -77,7 +95,7 @@ public class BankAccount {
      */
     public void deactivate() {
         // TODO : Implémenter
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.isActive = false ;
     }
     
     /**
@@ -85,7 +103,7 @@ public class BankAccount {
      */
     public void activate() {
         // TODO: Implémenter
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.isActive = true ;
     }
     
     /**
@@ -98,7 +116,8 @@ public class BankAccount {
         // 1. Se référer aux règles métiers pour déterminer les validations&throws à effectuer.
         //    Lever les exceptions appropriées avec messages clairs
         // 2. Modifier la limite de découvert
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(limit < 0.0) throw new IllegalArgumentException ("Overdraft limit cannot be negative");
+        this.overdraftLimit = limit ;
     }
     
     /**
@@ -107,36 +126,39 @@ public class BankAccount {
      * @return true si le retrait est possible
      */
     public boolean canWithdraw(double amount) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(amount <= 0.0) return false;
+        if(!this.isActive) return false;
+        if(amount > (this.balance + this.overdraftLimit)) return false;
+        return true;
     }
     
     // === GETTERS ===
     
     public String getAccountNumber() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.accountNumber;
     }
-    
+
     public String getHolderName() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.holderName;
     }
-    
+
     public double getBalance() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.balance;
     }
-    
+
     public boolean isActive() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.isActive;
     }
-    
+
     public double getOverdraftLimit() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.overdraftLimit;
     }
     
     /**
      * Retourne le solde disponible (solde + découvert)
      */
     public double getMaxAvailableBalance() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.balance + this.overdraftLimit;
     }
     
     @Override
